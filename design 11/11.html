@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>3D document</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+
+<style>
+  :root{
+    --bg-1: #071023;
+    --bg-2: #08163a;
+    --accent: rgb(89,141,12); 
+    --muted: rgba(255,255,255,0.85);
+    --glass: rgba(255,255,255,0.04);
+    --card-shadow: 0 10px 30px rgba(4,8,20,0.6);
+    --max-width: 1180px;
+  }
+
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: linear-gradient(180deg,var(--bg-1),var(--bg-2));
+    color:#fff;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  .hero {
+    position:relative;
+    width:100%;
+    min-height:72vh;
+    height:calc(100vh - 0px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    perspective:1200px; 
+    padding:48px 20px;
+  }
+
+  .hero-inner {
+    position:relative;
+    width:100%;
+    max-width:var(--max-width);
+    display:grid;
+    grid-template-columns: 1fr 420px;
+    gap:28px;
+    align-items:center;
+    z-index:6;
+    pointer-events:none; 
+  }
+
+
+  .hero-left {
+    position:relative;
+    padding:36px;
+    pointer-events:auto;
+  }
+
+  .hero-right {
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    align-items:center;
+    pointer-events:auto;
+  }
+
+  .title-wrap { display:block; transform-style:preserve-3d; }
+  .title {
+    font-size: clamp(36px, 6vw, 64px);
+    line-height:0.95;
+    letter-spacing:-0.5px;
+    margin-bottom:12px;
+    font-weight:700;
+    display:inline-block;
+    transform: translateZ(40px) rotateX(0deg);
+    text-wrap: balance;
+    color: white;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .title-accent {
+    display:inline-block;
+    height:8px;
+    width:120px;
+    border-radius:999px;
+    margin-top:14px;
+    background: linear-gradient(90deg, rgba(89,141,12,0.95), rgba(120,220,60,0.5));
+    box-shadow: 0 6px 30px rgba(89,141,12,0.18), 0 0 60px rgba(89,141,12,0.08);
+  }
+
+  .subtitle {
+    margin-top:18px;
+    color:var(--muted);
+    font-size:16px;
+    max-width:56ch;
+    line-height:1.5;
+    transform: translateZ(20px);
+  }
+
+  .cta-row { margin-top:24px; display:flex; gap:12px; align-items:center; transform: translateZ(30px); }
+  .btn {
+    pointer-events:auto;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 18px;
+    border-radius:999px;
+    background: linear-gradient(90deg, var(--accent), #a8d352);
+    color:#021102;
+    font-weight:600;
+    border:none;
+    cursor:pointer;
+    box-shadow: 0 8px 30px rgba(89,141,12,0.16);
+    transform: translateZ(40px);
+  }
+
+  .btn-ghost {
+    pointer-events:auto;
+    padding:10px 16px;
+    border-radius:999px;
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.08);
+    color:var(--muted);
+    cursor:pointer;
+    transform: translateZ(30px);
+  }
+
+  .floating {
+    position:absolute;
+    z-index:7;
+    transform-style:preserve-3d;
+    will-change:transform, opacity;
+    pointer-events:none;
+  }
+
+  .orb {
+    width:84px;
+    height:84px;
+    border-radius:999px;
+    background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.22), rgba(255,255,255,0.04)),
+                linear-gradient(135deg, rgba(120,220,60,0.12), rgba(60,180,255,0.08));
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 40px rgba(60,180,255,0.04) inset;
+    filter: blur(0.2px);
+  }
+
+  .card-ghost {
+    width:220px;
+    padding:14px;
+    border-radius:14px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    border:1px solid rgba(255,255,255,0.06);
+    box-shadow: var(--card-shadow);
+    color:var(--muted);
+    font-size:13px;
+  }
+
+  .bg-blob {
+    position:absolute;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+    transform: translateZ(-300px) scale(1.35);
+    filter: blur(28px) saturate(120%);
+    opacity:0.95;
+  }
+
+  .bg-overlay {
+    position:absolute; inset:0; z-index:4; pointer-events:none;
+    background: radial-gradient(60% 60% at 10% 10%, rgba(255,255,255,0.02), transparent),
+                radial-gradient(50% 40% at 90% 90%, rgba(0,0,0,0.18), transparent);
+    mix-blend-mode: overlay;
+  }
+
+
+  .fx-canvas {
+    position:absolute; inset:0; z-index:3; pointer-events:none;
+  }
+
+
+  @media (max-width:1040px){
+    .hero-inner{grid-template-columns:1fr; padding:18px}
+    .hero-right{order:2; flex-direction:row; justify-content:center; width:100%}
+    .hero-left{order:1;padding:20px}
+    .floating{display:none} 
+  }
+
+
+  @media (prefers-reduced-motion:reduce){
+    .title, .subtitle, .orb, .card-ghost, .btn { transition: none !important; animation: none !important; will-change: auto !important; transform:none !important }
+    .bg-blob{filter:none}
+  }
+</style>
+</head>
+<body>
+
+<section class="hero" aria-label="Hero section with 3D parallax">
+
+  <svg class="bg-blob" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <linearGradient id="G" x1="0" x2="1">
+        <stop offset="0" stop-color="#0ff6b8"/>
+        <stop offset="1" stop-color="#6bd3ff"/>
+      </linearGradient>
+      <filter id="gblur"><feGaussianBlur stdDeviation="28" /></filter>
+    </defs>
+
+
+    <g filter="url(#gblur)" opacity="0.9">
+      <path id="blobA" fill="url(#G)" opacity="0.95" d="M300,40 C420,40 540,120 540,240 C540,360 420,420 300,420 C180,420 60,360 60,240 C60,120 180,40 300,40 Z"></path>
+      <path id="blobB" fill="#093154" opacity="0.15" d="M300,40 C420,40 540,120 540,240 C540,360 420,420 300,420 C180,420 60,360 60,240 C60,120 180,40 300,40 Z" transform="translate(60,30) scale(0.85)"></path>
+      <path id="blobC" fill="#16324b" opacity="0.09" d="M300,40 C420,40 540,120 540,240 C540,360 420,420 300,420 C180,420 60,360 60,240 C60,120 180,40 300,40 Z" transform="translate(-80,60) scale(1.05)"></path>
+    </g>
+  </svg>
+
+
+  <canvas class="fx-canvas" id="fxCanvas" width="1600" height="900" aria-hidden="true"></canvas>
+
+  <div class="hero-inner" id="heroInner">
+    <div class="hero-left">
+      <div class="title-wrap" id="titleWrap">
+        <h1 class="title" id="mainTitle">Design that feels <span style="color:var(--accent)">alive</span></h1>
+        <div class="title-accent" aria-hidden="true"></div>
+      </div>
+
+      <p class="subtitle" id="subtitle">A layered 3D hero component with parallax motion, morphing background and smooth, tactile interactions — optimized for performance and drop-in use.</p>
+
+      <div class="cta-row">
+        <button class="btn" id="primaryBtn">Get started</button>
+        <button class="btn-ghost" id="secondaryBtn">Explore features</button>
+      </div>
+
+    </div>
+
+    <div class="hero-right" aria-hidden="true">
+      <div class="floating" id="f1" style="left:28px; top:24px; transform: translateZ(60px);">
+        <div class="card-ghost" style="width:240px;">
+          <strong>Fast</strong>
+          <div style="height:8px"></div>
+          <small style="color:var(--muted)">Optimized animations, minimal layout shift.</small>
+        </div>
+      </div>
+
+      <div class="floating" id="f2" style="right:10px; bottom:60px; transform: translateZ(80px);">
+        <div class="orb"></div>
+      </div>
+
+      <div class="floating" id="f3" style="left:48px; bottom:90px; transform: translateZ(30px);">
+        <div class="card-ghost" style="width:200px;">
+          <strong>Interactive</strong>
+          <div style="height:8px"></div>
+          <small style="color:var(--muted)">Mouse & scroll reactive micro-interactions.</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<script>
+
+
+(() => {
+
+  const $ = s => document.querySelector(s);
+  const hero = document.querySelector('.hero');
+  const heroInner = $('#heroInner');
+  const fxCanvas = document.getElementById('fxCanvas');
+  const fxCtx = fxCanvas.getContext('2d');
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+
+  const titleWrap = $('#titleWrap');
+  const mainTitle = $('#mainTitle');
+  const subtitle = $('#subtitle');
+  const primaryBtn = $('#primaryBtn');
+  const secondaryBtn = $('#secondaryBtn');
+  const blobs = { A: document.getElementById('blobA'), B: document.getElementById('blobB'), C: document.getElementById('blobC') };
+  const floats = Array.from(document.querySelectorAll('.floating'));
+
+
+  function fitCanvas() {
+    fxCanvas.width = hero.clientWidth * devicePixelRatio;
+    fxCanvas.height = hero.clientHeight * devicePixelRatio;
+    fxCanvas.style.width = hero.clientWidth + 'px';
+    fxCanvas.style.height = hero.clientHeight + 'px';
+    fxCtx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+  }
+  fitCanvas();
+  window.addEventListener('resize', fitCanvas);
+
+  let rect = hero.getBoundingClientRect();
+  function updateRect(){ rect = hero.getBoundingClientRect(); }
+  window.addEventListener('resize', updateRect);
+
+  const parallaxStrength = 26; // px / degrees
+  const tiltStrength = 8; 
+
+  function handlePointer(e) {
+    const x = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 .. 0.5
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+
+
+    const rotY = x * tiltStrength;
+    const rotX = -y * tiltStrength;
+    heroInner.style.transform = `translateZ(0px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+
+
+    floats.forEach(el => {
+
+      let tz = 0;
+      const t = el.style.transform.match(/translateZ\(([-0-9.]+)px\)/);
+      if (t) tz = parseFloat(t[1]);
+
+      const depthFactor = Math.min(1.2, Math.max(0.35, tz / 120));
+      const moveX = -x * parallaxStrength * depthFactor;
+      const moveY = -y * parallaxStrength * depthFactor;
+      el.style.transform = `translate3d(${moveX}px, ${moveY}px, ${tz}px) rotateY(${x*tiltStrength*0.25}deg)`;
+    });
+
+
+    mainTitle.style.transform = `translateZ(${40 + x*8}px)`;
+    subtitle.style.transform = `translateZ(${20 + y*4}px)`;
+    primaryBtn.style.transform = `translateZ(${40 + x*6}px) translateY(${y*6}px)`;
+  }
+
+
+  hero.addEventListener('pointermove', handlePointer);
+  hero.addEventListener('pointerleave', () => {
+
+    heroInner.style.transform = '';
+    floats.forEach(el => {
+
+      const t = el.getAttribute('style') || '';
+      const tzMatch = t.match(/translateZ\(([-0-9.]+)px\)/);
+      const tz = tzMatch ? tzMatch[1] : '0';
+      el.style.transform = `translateZ(${tz}px)`;
+    });
+    mainTitle.style.transform = '';
+    subtitle.style.transform = '';
+    primaryBtn.style.transform = '';
+  });
+
+
+  function lerp(a,b,t){ return a + (b-a)*t; }
+  function buildPath(points) {
+
+    if (!points.length) return '';
+    let d = `M ${points[0].x.toFixed(2)},${points[0].y.toFixed(2)} `;
+    for (let i = 1; i < points.length; i++) {
+      const p = points[i];
+      const prev = points[i-1];
+      const cx = (prev.x + p.x) / 2;
+      const cy = (prev.y + p.y) / 2;
+      d += `Q ${prev.x.toFixed(2)},${prev.y.toFixed(2)} ${cx.toFixed(2)},${cy.toFixed(2)} `;
+    }
+    d += `T ${points[0].x.toFixed(2)},${points[0].y.toFixed(2)} Z`;
+    return d;
+  }
+
+
+  const center = { x: 450, y: 300 };
+  function makeCirclePoints(radius = 220, count = 12, time = 0, seed = 0){
+    const pts = [];
+    for (let i=0;i<count;i++){
+      const angle = (i / count) * Math.PI * 2;
+
+      const n = Math.sin(time*0.9 + i*0.8 + seed*1.3) * 16 + Math.cos(time*1.6 + i*0.4 + seed*0.7)*8;
+      const r = radius + n;
+      pts.push({ x: center.x + Math.cos(angle)*r, y: center.y + Math.sin(angle)*r});
+    }
+    return pts;
+  }
+
+  let t0 = performance.now();
+  function animateBlobs(now){
+    const t = (now - t0) / 1000;
+
+    const pA = makeCirclePoints(220, 12, t*1.0, 0);
+    const pB = makeCirclePoints(180, 10, t*0.8, 2);
+    const pC = makeCirclePoints(260, 14, t*1.3, 5);
+    blobs.A.setAttribute('d', buildPath(pA));
+    blobs.B.setAttribute('d', buildPath(pB));
+    blobs.C.setAttribute('d', buildPath(pC));
+    requestAnimationFrame(animateBlobs);
+  }
+  requestAnimationFrame(animateBlobs);
+
+
+  let particles = [];
+  function resetParticles(){
+    particles = [];
+    const pCount = Math.max(20, Math.min(80, Math.round((hero.clientWidth*hero.clientHeight)/90000)));
+    for (let i=0;i<pCount;i++){
+      particles.push({
+        x: Math.random()*hero.clientWidth,
+        y: Math.random()*hero.clientHeight,
+        r: 0.6 + Math.random()*2,
+        vx: (Math.random()-0.5)*0.3,
+        vy: (Math.random()-0.5)*0.2,
+        a: 0.05 + Math.random()*0.4
+      });
+    }
+  }
+  resetParticles();
+
+  function drawParticles(){
+    fxCtx.clearRect(0,0,fxCanvas.width, fxCanvas.height);
+    fxCtx.save();
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+
+      if (p.x < -10) p.x = hero.clientWidth + 10;
+      if (p.x > hero.clientWidth + 10) p.x = -10;
+      if (p.y < -10) p.y = hero.clientHeight + 10;
+      if (p.y > hero.clientHeight + 10) p.y = -10;
+      fxCtx.beginPath();
+      fxCtx.fillStyle = `rgba(255,255,255,${p.a})`;
+      fxCtx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      fxCtx.fill();
+    });
+    fxCtx.restore();
+    requestAnimationFrame(drawParticles);
+  }
+  requestAnimationFrame(drawParticles);
+
+
+  window.addEventListener('resize', () => {
+    fitCanvas();
+    resetParticles();
+  });
+
+
+  function initGSAP(){
+    if (prefersReduced) return;
+    if (!window.gsap) return; 
+    const gs = window.gsap;
+
+
+    gs.from(mainTitle, {duration:0.9, y:36, opacity:0, ease:'power3.out', delay:0.12});
+    gs.from(subtitle, {duration:0.9, y:22, opacity:0, ease:'power3.out', delay:0.22});
+    gs.from('.btn', {duration:0.9, y:18, opacity:0, stagger:0.06, ease:'back.out(1.2)', delay:0.32});
+
+    floats.forEach((el, i) => {
+      gs.to(el, {
+        y: '+=8',
+        x: (i%2?'-=6':'+=6'),
+        rotation: (i%2?2:-2),
+        duration: 4 + Math.random()*3,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+        delay: i*0.15
+      });
+    });
+
+
+    gs.to(primaryBtn, { scale:1.02, duration:2.6, yoyo:true, repeat:-1, ease:'sine.inOut', transformOrigin:'center' });
+  }
+
+  if (window.gsap) initGSAP();
+  else {
+    window.addEventListener('load', () => setTimeout(initGSAP, 60));
+  }
+
+
+  primaryBtn.addEventListener('click', () => {
+
+    if (!prefersReduced && window.gsap) {
+      const timeline = gsap.timeline();
+      timeline.to(primaryBtn, { scale: 0.96, duration: 0.06, ease: 'power2.out' });
+      timeline.to(primaryBtn, { scale: 1.02, duration: 0.18, ease: 'elastic.out(1,0.6)' });
+      timeline.to(primaryBtn, { scale: 1, duration: 0.18, ease: 'power2.out' });
+    }
+
+    console.log('Primary CTA clicked');
+  });
+
+
+  primaryBtn.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { primaryBtn.click(); e.preventDefault(); }
+  });
+
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+
+      if (window.gsap) window.gsap.globalTimeline.pause();
+    } else {
+      if (window.gsap) window.gsap.globalTimeline.resume();
+    }
+  });
+
+
+  requestAnimationFrame(() => {
+    heroInner.style.transition = 'transform 0.18s ease-out';
+    setTimeout(()=> heroInner.style.transition = '', 500);
+  });
+
+})(); 
+</script>
+</body>
+</html>

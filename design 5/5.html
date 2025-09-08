@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hover Menu</title>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    
+    }
+
+    .fancy-navbar {
+      position: relative;
+      display: inline-block;
+
+    }
+
+    .nav-btn {
+      background: linear-gradient(
+        45deg,
+        red,
+        orange,
+        yellow,
+        green,
+        blue,
+        indigo,
+        violet,
+        red
+      );
+      animation: rgbflow 5s linear infinite;
+      background-size: 400% 400%;
+      width: 70px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50px;
+      opacity: 0.8;
+      cursor: pointer;
+      z-index: 2;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-btn i {
+      color: white;
+      font-size: 40px;
+    }
+
+    .before-nav {
+      position: absolute;
+      left: 80px;
+      top: 50%;
+      transform: translateY(-50%) scaleX(0);
+      opacity: 0;
+      padding: 10px 20px;
+      border-radius: 10px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      transition: all 0.3s ease;
+      transform-origin: center left;
+      white-space: nowrap;
+    }
+
+    .fancy-navbar:hover .before-nav {
+      opacity: 1;
+      transform: translateY(-50%) scaleX(1);
+    }
+    .nav-btn:hover{
+        width: 900px;
+        display: flex;
+        justify-content: start;
+        padding: 20px;
+    }
+    .nav-items p {
+      color: white;
+      margin: 0 10px;
+      cursor: pointer;
+      display: inline-block;
+    }
+    .form input[type="search"]{
+        height: 40px;
+        font-size: 13px;
+        border-radius: 20px;
+    }
+
+
+
+    
+    .search-nav input {
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+    }
+    .nav-items p:hover{
+        text-decoration: underline;
+    }
+
+    @keyframes rgbflow {
+      0% {
+        background-position: 0% 50%;
+      }
+      100% {
+        background-position: 100% 100%;
+      }
+    }
+
+
+
+  </style>
+</head>
+<body>
+
+
+
+
+  <div class="fancy-navbar">
+    <div class="nav-btn">
+      <i class="fa-solid fa-globe"></i>
+      <div class="before-nav">
+        <div class="nav-items">
+          <p>HOME</p>
+          <p>ABOUT</p>
+          <p>CATALOG</p>
+          <p>EVENTS</p>
+          <p>NEWS</p>
+          <p>CONTACTS</p>
+          <p>BLOG</p>
+        </div>
+        <div class="search-nav">
+          <form class="form">
+            <input type="search" placeholder="Search..." />
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+</body>
+</html>

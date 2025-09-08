@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Glowing Particle Trail</title>
+<style>
+
+
+
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: black;
+  }
+  canvas {
+    display: block;
+  }
+
+
+
+
+
+</style>
+</head>
+<body>
+
+
+
+
+  <canvas id="particles"></canvas>
+
+
+
+
+
+  <script>
+
+
+  const canvas = 
+  document.getElementById("particles");
+  const ctx = canvas.getContext("2d");
+  let w, h;
+  let particles = [];
+
+  function resizeCanvas() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.
+  addEventListener("resize", resizeCanvas);
+
+
+
+
+
+  class Particle {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.size = Math.random() * 4 + 1;
+      this.speedX = (Math.random() - 0.5) * 2;
+      this.speedY = (Math.random() - 0.5) * 2;
+      this.alpha = 1;
+      this.color = `hsl(${Math.random() * 360}, 100%, 70%)`;
+    }
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      this.alpha -= 0.02;
+    }
+    draw() {
+      ctx.globalAlpha = this.alpha;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = this.color;
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = this.color;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  let mouse = { x: null, y: null };
+  window.addEventListener("mousemove", e => {
+    mouse.x = e.x;
+    mouse.y = e.y;
+    for (let i = 0; i < 3; i++) {
+      particles.push(new Particle(mouse.x, mouse.y));
+    }
+  });
+
+  function animate() {
+    ctx.clearRect(0, 0, w, h); 
+    particles.forEach((p, index) => {
+      p.update();
+      p.draw();
+      if (p.alpha <= 0) {
+        particles.splice(index, 1);
+      }
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
+  </script>
+</body>
+</html>

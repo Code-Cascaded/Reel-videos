@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+
+
+
+            *{
+                margin: 0;
+                padding: 0;
+            }
+
+
+
+
+            #parent{
+                height: 100vh;
+                position: relative;
+                background-color: rgb(21, 21, 21);
+            }
+            #child{
+                position: absolute;
+                height: 100px;
+                width: 100px;
+                border-radius: 100px;
+                background-color: rgb(168, 168, 168);
+                text-align: center;
+                transition: all 0.1s linear;
+            }
+
+
+
+
+        </style>
+    <title>Document</title>
+</head>
+<body>
+
+
+
+
+    <div id="parent">
+        <div id="child"></div>
+    </div>
+
+
+
+    
+
+    <script>
+
+
+        let parent = document.getElementById("parent")
+        let child = document.getElementById("child")
+
+        parent.addEventListener("mousemove" , (e)=> {
+            let x = e.clientX - 75
+            let y = e.clientY - 75
+
+            child.style.top = `${y}px`
+            child.style.left = `${x}px`
+        })
+
+
+
+
+    </script>
+
+</body>
+</html>

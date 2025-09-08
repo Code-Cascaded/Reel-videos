@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title></title>
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgb(5, 0, 14);
+}
+
+
+
+
+
+    .ring {
+        width: 150px;
+        height: 150px;
+        border: 6px solid transparent;
+        border-top: 6px solid cyan;
+        border-radius: 50%;
+        animation: spin 2s linear infinite, glow 1.5s ease-in-out infinite alternate;
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    @keyframes glow {
+        0% { box-shadow: 0 0 10px cyan; }
+        100% { box-shadow: 0 0 25px cyan, 0 0 50px cyan; }
+    }
+
+
+
+
+
+</style>
+</head>
+<body>  
+
+
+
+            
+
+        <div class="ring"></div>
+
+
+
+
+
+
+</body>
+</html>
+
