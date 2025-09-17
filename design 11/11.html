@@ -177,89 +177,93 @@
   }
 
 
-  .fx-canvas {
-    position:absolute; inset:0; z-index:3; pointer-events:none;
-  }
 
 
-  @media (max-width:1040px){
-    .hero-inner{grid-template-columns:1fr; padding:18px}
-    .hero-right{order:2; flex-direction:row; justify-content:center; width:100%}
-    .hero-left{order:1;padding:20px}
-    .floating{display:none} 
-  }
+
+        .fx-canvas {
+          position:absolute; inset:0; z-index:3; pointer-events:none;
+        }
+        @media (max-width:1040px){
+          .hero-inner{grid-template-columns:1fr; padding:18px}
+          .hero-right{order:2; flex-direction:row; justify-content:center; width:100%}
+          .hero-left{order:1;padding:20px}
+          .floating{display:none} 
+        }
+        @media (prefers-reduced-motion:reduce){
+          .title, .subtitle, .orb, .card-ghost, .btn { transition: none !important; animation: none !important; will-change: auto !important; transform:none !important }
+          .bg-blob{filter:none}
+        }
+
+        
 
 
-  @media (prefers-reduced-motion:reduce){
-    .title, .subtitle, .orb, .card-ghost, .btn { transition: none !important; animation: none !important; will-change: auto !important; transform:none !important }
-    .bg-blob{filter:none}
-  }
 </style>
 </head>
 <body>
 
-<section class="hero" aria-label="Hero section with 3D parallax">
-
-  <svg class="bg-blob" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <defs>
-      <linearGradient id="G" x1="0" x2="1">
-        <stop offset="0" stop-color="#0ff6b8"/>
-        <stop offset="1" stop-color="#6bd3ff"/>
-      </linearGradient>
-      <filter id="gblur"><feGaussianBlur stdDeviation="28" /></filter>
-    </defs>
 
 
-    <g filter="url(#gblur)" opacity="0.9">
-      <path id="blobA" fill="url(#G)" opacity="0.95" d="M300,40 C420,40 540,120 540,240 C540,360 420,420 300,420 C180,420 60,360 60,240 C60,120 180,40 300,40 Z"></path>
-      <path id="blobB" fill="#093154" opacity="0.15" d="M300,40 C420,40 540,120 540,240 C540,360 420,420 300,420 C180,420 60,360 60,240 C60,120 180,40 300,40 Z" transform="translate(60,30) scale(0.85)"></path>
-      <path id="blobC" fill="#16324b" opacity="0.09" d="M300,40 C420,40 540,120 540,240 C540,360 420,420 300,420 C180,420 60,360 60,240 C60,120 180,40 300,40 Z" transform="translate(-80,60) scale(1.05)"></path>
-    </g>
-  </svg>
+      <section class="hero" aria-label="Hero section with 3D parallax">
+        <svg class="bg-blob" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <linearGradient id="G" x1="0" x2="1">
+              <stop offset="0" stop-color="#0ff6b8"/>
+              <stop offset="1" stop-color="#6bd3ff"/>
+            </linearGradient>
+            <filter id="gblur"><feGaussianBlur stdDeviation="28" /></filter>
+          </defs>
 
 
-  <canvas class="fx-canvas" id="fxCanvas" width="1600" height="900" aria-hidden="true"></canvas>
+          <g filter="url(#gblur)" opacity="0.9">
+            <path id="blobA" fill="url(#G)" opacity="0.95" d="M300,40 C420,40 540,120 540,240 C540,360 420,420 300,420 C180,420 60,360 60,240 C60,120 180,40 300,40 Z"></path>
+            <path id="blobB" fill="#093154" opacity="0.15" d="M300,40 C420,40 540,120 540,240 C540,360 420,420 300,420 C180,420 60,360 60,240 C60,120 180,40 300,40 Z" transform="translate(60,30) scale(0.85)"></path>
+            <path id="blobC" fill="#16324b" opacity="0.09" d="M300,40 C420,40 540,120 540,240 C540,360 420,420 300,420 C180,420 60,360 60,240 C60,120 180,40 300,40 Z" transform="translate(-80,60) scale(1.05)"></path>
+          </g>
+        </svg>
 
-  <div class="hero-inner" id="heroInner">
-    <div class="hero-left">
-      <div class="title-wrap" id="titleWrap">
-        <h1 class="title" id="mainTitle">Design that feels <span style="color:var(--accent)">alive</span></h1>
-        <div class="title-accent" aria-hidden="true"></div>
-      </div>
+        <canvas class="fx-canvas" id="fxCanvas" width="1600" height="900" aria-hidden="true"></canvas>
 
-      <p class="subtitle" id="subtitle">A layered 3D hero component with parallax motion, morphing background and smooth, tactile interactions — optimized for performance and drop-in use.</p>
+        <div class="hero-inner" id="heroInner">
+          <div class="hero-left">
+            <div class="title-wrap" id="titleWrap">
+              <h1 class="title" id="mainTitle">Design that feels <span style="color:var(--accent)">alive</span></h1>
+              <div class="title-accent" aria-hidden="true"></div>
+            </div>
 
-      <div class="cta-row">
-        <button class="btn" id="primaryBtn">Get started</button>
-        <button class="btn-ghost" id="secondaryBtn">Explore features</button>
-      </div>
+            <p class="subtitle" id="subtitle">A layered 3D hero component with parallax motion, morphing background and smooth, tactile interactions — optimized for performance and drop-in use.</p>
 
-    </div>
+            <div class="cta-row">
+              <button class="btn" id="primaryBtn">Get started</button>
+              <button class="btn-ghost" id="secondaryBtn">Explore features</button>
+            </div>
 
-    <div class="hero-right" aria-hidden="true">
-      <div class="floating" id="f1" style="left:28px; top:24px; transform: translateZ(60px);">
-        <div class="card-ghost" style="width:240px;">
-          <strong>Fast</strong>
-          <div style="height:8px"></div>
-          <small style="color:var(--muted)">Optimized animations, minimal layout shift.</small>
+          </div>
+
+          <div class="hero-right" aria-hidden="true">
+            <div class="floating" id="f1" style="left:28px; top:24px; transform: translateZ(60px);">
+              <div class="card-ghost" style="width:240px;">
+                <strong>Fast</strong>
+                <div style="height:8px"></div>
+                <small style="color:var(--muted)">Optimized animations, minimal layout shift.</small>
+              </div>
+            </div>
+
+            <div class="floating" id="f2" style="right:10px; bottom:60px; transform: translateZ(80px);">
+              <div class="orb"></div>
+            </div>
+
+            <div class="floating" id="f3" style="left:48px; bottom:90px; transform: translateZ(30px);">
+              <div class="card-ghost" style="width:200px;">
+                <strong>Interactive</strong>
+                <div style="height:8px"></div>
+                <small style="color:var(--muted)">Mouse & scroll reactive micro-interactions.</small>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div class="floating" id="f2" style="right:10px; bottom:60px; transform: translateZ(80px);">
-        <div class="orb"></div>
-      </div>
 
-      <div class="floating" id="f3" style="left:48px; bottom:90px; transform: translateZ(30px);">
-        <div class="card-ghost" style="width:200px;">
-          <strong>Interactive</strong>
-          <div style="height:8px"></div>
-          <small style="color:var(--muted)">Mouse & scroll reactive micro-interactions.</small>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</section>
 
 <script>
 
@@ -349,6 +353,10 @@
   function lerp(a,b,t){ return a + (b-a)*t; }
   function buildPath(points) {
 
+
+
+
+
     if (!points.length) return '';
     let d = `M ${points[0].x.toFixed(2)},${points[0].y.toFixed(2)} `;
     for (let i = 1; i < points.length; i++) {
@@ -361,6 +369,9 @@
     d += `T ${points[0].x.toFixed(2)},${points[0].y.toFixed(2)} Z`;
     return d;
   }
+
+
+
 
 
   const center = { x: 450, y: 300 };
