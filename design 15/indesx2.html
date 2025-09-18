@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Password Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .generator {
+      background: #1c1c1c;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(89,141,12,0.6);
+      width: 350px;
+      text-align: center;
+    }
+
+    h2 {
+      color: rgb(89,141,12);
+      margin-bottom: 20px;
+    }
+
+    .output {
+      background: #222;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      font-size: 18px;
+      word-wrap: break-word;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    input[type="number"] {
+      width: 60px;
+      padding: 4px;
+      border-radius: 5px;
+      border: none;
+      outline: none;
+    }
+
+    input[type="checkbox"] {
+      transform: scale(1.2);
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 10px;
+      background: rgb(89,141,12);
+      color: #fff;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #a5e82f;
+      color: #111;
+    }
+
+    .copy {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #aaa;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .copy:hover {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="generator">
+    <h2>🔑 Password Generator</h2>
+    <div class="output" id="passwordOutput">Your password here...</div>
+
+    <div class="controls">
+      <label>
+        Length:
+        <input type="number" id="length" value="12" min="6" max="32">
+      </label>
+      <label>
+        <span>Include Uppercase</span>
+        <input type="checkbox" id="uppercase" checked>
+      </label>
+      <label>
+        <span>Include Numbers</span>
+        <input type="checkbox" id="numbers" checked>
+      </label>
+      <label>
+        <span>Include Symbols</span>
+        <input type="checkbox" id="symbols" checked>
+      </label>
+    </div>
+
+    <button onclick="generatePassword()">Generate Password</button>
+    <div class="copy" onclick="copyPassword()">📋 Copy to Clipboard</div>
+  </div>
+
+  <script>
+    function generatePassword() {
+      const length = document.getElementById("length").value;
+      const includeUppercase = document.getElementById("uppercase").checked;
+      const includeNumbers = document.getElementById("numbers").checked;
+      const includeSymbols = document.getElementById("symbols").checked;
+
+      let lower = "abcdefghijklmnopqrstuvwxyz";
+      let upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      let numbers = "0123456789";
+      let symbols = "!@#$%^&*()_+[]{}|;:,.<>?";
+
+      let chars = lower;
+      if (includeUppercase) chars += upper;
+      if (includeNumbers) chars += numbers;
+      if (includeSymbols) chars += symbols;
+
+      let password = "";
+      for (let i = 0; i < length; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+
+      document.getElementById("passwordOutput").textContent = password;
+    }
+
+    function copyPassword() {
+      const password = document.getElementById("passwordOutput").textContent;
+      if (password && password !== "Your password here...") {
+        navigator.clipboard.writeText(password);
+        alert("Password copied!");
+      }
+    }
+  </script>
+</body>
+</html>

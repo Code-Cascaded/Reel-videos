@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Animated To-Do List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .todo-app {
+      background: #1c1c1c;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(89, 141, 12, 0.5);
+      width: 300px;
+    }
+
+    h2 {
+      text-align: center;
+      color: rgb(89, 141, 12);
+      margin-bottom: 15px;
+    }
+
+    .input-group {
+      display: flex;
+      margin-bottom: 15px;
+    }
+
+    input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 10px 0 0 10px;
+      outline: none;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      background: rgb(89, 141, 12);
+      color: #fff;
+      border-radius: 0 10px 10px 0;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #a5e82f;
+      color: #111;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      background: #222;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    li.completed {
+      text-decoration: line-through;
+      color: #888;
+      background: #2a2a2a;
+    }
+
+    li:hover {
+      transform: scale(1.02);
+      background: #2c2c2c;
+    }
+
+    .delete {
+      background: none;
+      border: none;
+      color: crimson;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    .delete:hover {
+      color: #ff4d4d;
+      transform: scale(1.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="todo-app">
+    <h2>✅ To-Do List</h2>
+    <div class="input-group">
+      <input type="text" id="taskInput" placeholder="Add a task...">
+      <button onclick="addTask()">Add</button>
+    </div>
+    <ul id="taskList"></ul>
+  </div>
+
+  <script>
+    const taskInput = document.getElementById("taskInput");
+    const taskList = document.getElementById("taskList");
+
+    // Load tasks from local storage
+    window.onload = () => {
+      const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      savedTasks.forEach(task => addTask(task.text, task.completed));
+    };
+
+    function addTask(text, completed = false) {
+      const taskText = text || taskInput.value.trim();
+      if (!taskText) return;
+
+      const li = document.createElement("li");
+      li.textContent = taskText;
+      if (completed) li.classList.add("completed");
+
+      li.addEventListener("click", () => {
+        li.classList.toggle("completed");
+        saveTasks();
+      });
+
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "✖";
+      delBtn.className = "delete";
+      delBtn.onclick = (e) => {
+        e.stopPropagation();
+        li.remove();
+        saveTasks();
+      };
+
+      li.appendChild(delBtn);
+      taskList.appendChild(li);
+
+      taskInput.value = "";
+      saveTasks();
+    }
+
+    function saveTasks() {
+      const tasks = [];
+      document.querySelectorAll("#taskList li").forEach(li => {
+        tasks.push({ text: li.firstChild.textContent, completed: li.classList.contains("completed") });
+      });
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+  </script>
+</body>
+</html>

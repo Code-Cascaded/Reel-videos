@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Password Strength Meter</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0e0e14;
+    font-family: system-ui, sans-serif;
+  }
+
+  .box {
+    background: #161b22;
+    padding: 28px;
+    border-radius: 16px;
+    width: 320px;
+    box-shadow: 0 0 18px #0006;
+    text-align: center;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    background: #0d1117;
+    color: #e6edf3;
+    outline: none;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    box-sizing: border-box; /* ✅ Fix overflow */
+  }
+
+  input:focus {
+    border-color: #2ecc71;
+    box-shadow: 0 0 8px #2ecc71aa;
+  }
+
+  .meter {
+    margin-top: 16px;
+    height: 10px;
+    border-radius: 6px;
+    background: #30363d;
+    overflow: hidden;
+  }
+
+  .meter-fill {
+    height: 100%;
+    width: 0%;
+    background: #ff4d4d;
+    border-radius: 6px;
+    transition: width .4s ease, background .4s ease;
+  }
+
+  .label {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #8b949e;
+    text-align: center;
+    transition: color .3s ease;
+  }
+</style>
+</head>
+<body>
+
+<div class="box">
+  <input type="password" id="pwd" placeholder="Enter password">
+  <div class="meter"><div class="meter-fill" id="fill"></div></div>
+  <div class="label" id="label">Strength: None</div>
+</div>
+
+<script>
+  const input = document.getElementById("pwd");
+  const fill = document.getElementById("fill");
+  const label = document.getElementById("label");
+
+  input.addEventListener("input", () => {
+    const val = input.value;
+    let strength = 0;
+
+    if (val.length > 5) strength++;
+    if (/[A-Z]/.test(val)) strength++;
+    if (/[0-9]/.test(val)) strength++;
+    if (/[^A-Za-z0-9]/.test(val)) strength++;
+
+    if (strength === 0) {
+      fill.style.width = "0%";
+      label.textContent = "Strength: None";
+      label.style.color = "#8b949e";
+    } else if (strength === 1) {
+      fill.style.width = "25%";
+      fill.style.background = "#ff4d4d";
+      label.textContent = "Strength: Weak";
+      label.style.color = "#ff4d4d";
+    } else if (strength === 2) {
+      fill.style.width = "50%";
+      fill.style.background = "#ff9933";
+      label.textContent = "Strength: Medium";
+      label.style.color = "#ff9933";
+    } else if (strength === 3) {
+      fill.style.width = "75%";
+      fill.style.background = "#f1c40f";
+      label.textContent = "Strength: Good";
+      label.style.color = "#f1c40f";
+    } else {
+      fill.style.width = "100%";
+      fill.style.background = "#2ecc71";
+      label.textContent = "Strength: Strong";
+      label.style.color = "#2ecc71";
+    }
+  });
+</script>
+
+</body>
+</html>

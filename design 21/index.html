@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>display</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .parent{
+            height: 100vh;
+            width: 100%;
+            background-color: aquamarine;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .child{
+            background-color: crimson;
+            /* height: 140px; */
+            /* width: 200px; */
+        }
+        .col-span-2{
+            grid-column: span 2;
+            grid-row-start: 1;
+            grid-row-end: 3;
+        }
+        .col-span2{
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="parent">
+        <div class="child col-span-2"></div>
+        <div class="child"></div>
+        <div class="child"></div>
+        <div class="child col-span2"></div>
+    </div>
+
+</body>
+</html>

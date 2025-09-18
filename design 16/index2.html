@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Centered Task Complete</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f0f0f0;
+    font-family: Arial, sans-serif;
+  }
+
+  .check-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .checkmark {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 5px solid #4caf50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    transform: scale(0);
+    animation: pop 0.5s forwards;
+  }
+
+  .tick {
+    position: absolute;
+    width: 30px;
+    height: 15px;
+    border-left: 5px solid #4caf50;
+    border-bottom: 5px solid #4caf50;
+    transform: rotate(-45deg) scaleX(0);
+    transform-origin: left center;
+    animation: draw 0.5s 0.5s forwards;
+    bottom: 25px;
+    right: 18px;
+  }
+
+  .text {
+    margin-top: 20px;
+    font-size: 20px;
+    color: #4caf50;
+    opacity: 0;
+    animation: fade 0.5s 1s forwards;
+  }
+
+  @keyframes pop {
+    to { transform: scale(1); }
+  }
+
+  @keyframes draw {
+    to { transform: rotate(-45deg) scaleX(1); }
+  }
+
+  @keyframes fade {
+    to { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+  <div class="check-container" onclick="restartAnimation(this)">
+    <div class="checkmark">
+      <div class="tick"></div>
+    </div>
+    <div class="text">Task Completed!</div>
+  </div>
+
+<script>
+function restartAnimation(el) {
+  const check = el.querySelector('.checkmark');
+  const tick = el.querySelector('.tick');
+  const text = el.querySelector('.text');
+
+  check.style.animation = 'none';
+  tick.style.animation = 'none';
+  text.style.animation = 'none';
+
+  void check.offsetWidth;
+  check.style.animation = 'pop 0.5s forwards';
+  tick.style.animation = 'draw 0.5s 0.5s forwards';
+  text.style.animation = 'fade 0.5s 1s forwards';
+}
+</script>
+</body>
+</html>
