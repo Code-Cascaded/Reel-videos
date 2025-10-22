@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title></title>
+<style>
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:#03060b;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+  body{display:grid;place-items:center;padding:28px;overflow:hidden;color:#cfefff}
+
+  .stage{
+    width:min(92vmin,980px);
+    height:min(78vmin,720px);
+    position:relative;
+    perspective:1400px;
+    display:grid;place-items:center;
+    isolation:isolate;
+  }
+  .nebula{
+    position:absolute; inset:-20%;
+    background:
+      radial-gradient(60vmax 40vmax at 10% 10%, rgba(24,80,110,0.12), transparent 8%),
+      radial-gradient(50vmax 30vmax at 90% 90%, rgba(160,70,130,0.06), transparent 8%),
+      linear-gradient(180deg,#03060b,#02040a 60%);
+    filter: blur(8px) saturate(1.08);
+    z-index:0; pointer-events:none;
+  }
+
+  .camera{
+    position:relative; width:100%; height:100%; transform-style:preserve-3d;
+    display:grid; place-items:center; z-index:2;
+    animation: cam 16s ease-in-out infinite;
+  }
+  @keyframes cam{
+    0%{ transform: rotateX(12deg) rotateY(-6deg) translateZ(0) }
+    50%{ transform: rotateX(14deg) rotateY(6deg) translateZ(0) }
+    100%{ transform: rotateX(12deg) rotateY(-6deg) translateZ(0) }
+  }
+
+  .nexus{
+    width:520px; height:520px; position:relative; transform-style:preserve-3d;
+    display:grid; place-items:center; pointer-events:none;
+  }
+
+  .rings{ position:absolute; inset:0; display:block; transform: translateZ(40px); }
+  .rings .ring{
+    --size: 420px;
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:var(--size); height:var(--size); border-radius:50%;
+    background:
+      conic-gradient(from 120deg, rgba(120,220,255,0.06), rgba(190,120,255,0.04), rgba(255,210,120,0.03));
+    mix-blend-mode: screen;
+    border:1px solid rgba(255,255,255,0.02);
+    filter: blur(.4px) saturate(1.1);
+  }
+  .rings .ring.r1{ --size:320px; animation: spinA 20s linear infinite; box-shadow:0 30px 120px rgba(0,0,0,0.6) inset }
+  .rings .ring.r2{ --size:380px; animation: spinB 28s linear reverse infinite; }
+  .rings .ring.r3{ --size:460px; animation: spinA 36s linear infinite; opacity:.9 }
+  @keyframes spinA{ to{ transform:translate(-50%,-50%) rotate(360deg) } }
+  @keyframes spinB{ to{ transform:translate(-50%,-50%) rotate(-360deg) } }
+
+  .links{
+    position:absolute; left:50%; top:50%; width:0; height:0; transform:translate(-50%,-50%); z-index:4;
+  }
+  .link{
+    --angle: 0deg; --len: 200px;
+    position:absolute; left:50%; top:50%;
+    transform: rotate(var(--angle));
+    transform-origin: 0 0;
+    pointer-events:none;
+    opacity:0;
+    animation: linkIn .9s cubic-bezier(.2,.9,.2,1) forwards;
+  }
+  @keyframes linkIn{
+    to{ opacity:1 }
+  }
+
+  .link .bar{
+    position:absolute; left:0; top:50%; transform-origin:left center;
+    height:2px; width:var(--len);
+    background: linear-gradient(90deg, rgba(140,220,255,0.06), rgba(255,160,210,0.04));
+    transform: scaleX(0);
+    border-radius:2px;
+    box-shadow: 0 0 10px rgba(120,200,255,0.06);
+    animation: draw 1.15s cubic-bezier(.18,.9,.22,1) forwards;
+  }
+  @keyframes draw{ to{ transform: scaleX(1) } }
+
+  .link .dot{
+    position:absolute; left:calc(var(--len) - 8px); top:50%; transform:translateY(-50%);
+    width:14px; height:14px; border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #fff, #cfeaff 10%, #61d2ff 70%);
+    box-shadow: 0 0 18px rgba(90,200,255,0.9), 0 0 36px rgba(180,100,220,0.12);
+    transform-origin:center;
+    opacity:0; animation: dotIn .7s ease forwards;
+  }
+  @keyframes dotIn{ to{ opacity:1; transform:translateY(-50%) scale(1) } }
+
+  .nodePanel{
+    position:absolute; left:calc(var(--len) + 18px); top:50%; transform:translateY(-50%) translateZ(12px);
+    width:96px; height:56px; border-radius:10px; padding:8px;
+    background: linear-gradient(180deg, rgba(10,20,36,0.9), rgba(6,10,16,0.85));
+    color:#dff8ff; font-weight:700; font-size:.72rem; letter-spacing:.06em;
+    border:1px solid rgba(255,255,255,0.04);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6), inset 0 0 6px rgba(255,255,255,0.02);
+    opacity:0; transform-origin:left center; animation: panelIn .6s cubic-bezier(.2,.9,.2,1) forwards;
+  }
+  @keyframes panelIn{ from{ opacity:0; transform: translateY(-50%) translateZ(12px) scale(.88) } to{ opacity:1; transform: translateY(-50%) translateZ(12px) scale(1) } }
+
+  .link:nth-child(1)  { --angle:  -8deg;  --len: 220px;  animation-delay:.12s;  }
+  .link:nth-child(1) .bar{ animation-delay: .28s }
+  .link:nth-child(1) .dot{ animation-delay: .9s }
+  .link:nth-child(1) .nodePanel{ animation-delay: 1.05s }
+
+  .link:nth-child(2)  { --angle:  12deg;  --len: 200px;  animation-delay:.18s;  }
+  .link:nth-child(2) .bar{ animation-delay: .36s }
+  .link:nth-child(2) .dot{ animation-delay: .98s }
+  .link:nth-child(2) .nodePanel{ animation-delay: 1.12s }
+
+  .link:nth-child(3)  { --angle:  46deg;  --len: 170px;  animation-delay:.28s;  }
+  .link:nth-child(3) .bar{ animation-delay: .44s }
+  .link:nth-child(3) .dot{ animation-delay: 1.06s }
+  .link:nth-child(3) .nodePanel{ animation-delay: 1.20s }
+
+  .link:nth-child(4)  { --angle:  110deg; --len: 210px;  animation-delay:.34s;  }
+  .link:nth-child(4) .bar{ animation-delay: .52s }
+  .link:nth-child(4) .dot{ animation-delay: 1.14s }
+  .link:nth-child(4) .nodePanel{ animation-delay: 1.28s }
+
+  .link:nth-child(5)  { --angle:  180deg; --len: 240px;  animation-delay:.40s;  }
+  .link:nth-child(5) .bar{ animation-delay: .60s }
+  .link:nth-child(5) .dot{ animation-delay: 1.22s }
+  .link:nth-child(5) .nodePanel{ animation-delay: 1.36s }
+
+  .link:nth-child(6)  { --angle:  245deg; --len: 190px;  animation-delay:.46s;  }
+  .link:nth-child(6) .bar{ animation-delay: .68s }
+  .link:nth-child(6) .dot{ animation-delay: 1.30s }
+  .link:nth-child(6) .nodePanel{ animation-delay: 1.44s }
+
+  .link:nth-child(7)  { --angle:  300deg; --len: 205px;  animation-delay:.52s;  }
+  .link:nth-child(7) .bar{ animation-delay: .76s }
+  .link:nth-child(7) .dot{ animation-delay: 1.38s }
+  .link:nth-child(7) .nodePanel{ animation-delay: 1.52s }
+
+  .link:nth-child(8)  { --angle:  330deg; --len: 175px;  animation-delay:.58s;  }
+  .link:nth-child(8) .bar{ animation-delay: .84s }
+  .link:nth-child(8) .dot{ animation-delay: 1.46s }
+  .link:nth-child(8) .nodePanel{ animation-delay: 1.60s }
+
+  .dot::after{
+    content:""; position:absolute; inset:-6px; border-radius:50%;
+    box-shadow: 0 0 28px rgba(80,200,255,0.08), 0 0 60px rgba(180,120,255,0.03);
+    transform:scale(.9); opacity:0.9;
+  }
+  .dot.pulse{ animation: dotPulse 2.6s ease-in-out infinite; }
+  @keyframes dotPulse{ 0%,100%{ transform:translateY(-50%) scale(1); opacity:1 } 50%{ transform:translateY(-50%) scale(1.18); opacity:.85 } }
+
+  .core{
+    position:absolute; width:110px; height:110px; left:50%; top:50%; transform:translate(-50%,-50%) translateZ(60px);
+    border-radius:50%;
+    background:
+      radial-gradient(circle at 35% 35%, #fff9, #bfefff15 8%, transparent 30%),
+      radial-gradient(circle at 60% 60%, rgba(40,200,255,0.12), rgba(180,100,220,0.06)),
+      linear-gradient(180deg, #061024, #081224);
+    border:1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 16px 60px rgba(0,0,0,0.6), 0 0 30px rgba(60,220,255,0.06) inset;
+    z-index:6; display:grid; place-items:center;
+    transform-origin:center center;
+  }
+  .core .vortex{
+    position:absolute; inset:6px; border-radius:50%;
+    background: conic-gradient(from 90deg, rgba(120,220,255,0.12), rgba(220,120,255,0.08));
+    filter: blur(8px) saturate(1.2); mix-blend-mode: screen; opacity:.95;
+    animation: vortex 8s linear infinite;
+  }
+  .core .pulse{
+    position:relative; width:36px; height:36px; border-radius:50%;
+    background: radial-gradient(circle at 30% 28%, #e8fbff, #8bdcff 40%, #00b0ff 70%);
+    box-shadow: 0 0 36px rgba(120,220,255,0.95);
+    animation: corePulse 2.4s cubic-bezier(.15,.86,.25,1) infinite;
+  }
+  @keyframes vortex{ to{ transform: rotate(360deg) } }
+  @keyframes corePulse{ 0%{ transform:scale(.88) } 50%{ transform:scale(1.18) } 100%{ transform:scale(.88) } }
+
+  .particles{ position:absolute; inset:0; left:50%; top:50%; transform:translate(-50%,-50%) translateZ(10px); z-index:5; pointer-events:none; }
+  .particle{
+    position:absolute; left:50%; top:50%; width:8px; height:8px; border-radius:50%;
+    background: radial-gradient(circle, #cfeaff, #5dbfff);
+    box-shadow: 0 0 12px rgba(100,200,255,0.8);
+    transform-origin:center center;
+    animation: particleOrbit linear infinite;
+    opacity:0;
+  }
+  .particle.p1{ transform: translateX(160px) rotate(0deg) translateZ(0); animation-duration:3.6s; animation-delay:1.12s; opacity:1 }
+  .particle.p2{ transform: translateX(200px) rotate(90deg) translateZ(20px); animation-duration:4.2s; animation-delay:1.28s; opacity:1 }
+  .particle.p3{ transform: translateX(120px) rotate(200deg) translateZ(40px); animation-duration:3.2s; animation-delay:1.06s; opacity:1 }
+  .particle.p4{ transform: translateX(240px) rotate(310deg) translateZ(10px); animation-duration:5.2s; animation-delay:1.4s; opacity:1 }
+  @keyframes particleOrbit{
+    0%{ transform: rotate(0deg) translateX(var(--tx,120px)) rotateZ(0deg) translateZ(0) }
+    50%{ transform: rotate(180deg) translateX(var(--tx,120px)) translateZ(40px) }
+    100%{ transform: rotate(360deg) translateX(var(--tx,120px)) rotateZ(0deg) translateZ(0) }
+  }
+
+  .hud{
+    position:absolute; right:5%; top:6%; z-index:8; color:#cfefff; font-weight:700; letter-spacing:.12em; font-size:.9rem;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    padding:.48rem .7rem; border-radius:8px; border:1px solid rgba(255,255,255,0.04);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px) saturate(1.1);
+  }
+
+  .reflection{
+    position:absolute; left:50%; bottom:6%; transform:translateX(-50%) rotateX(74deg) translateZ(-40px);
+    width:520px; height:120px; background: linear-gradient(180deg, rgba(120,200,255,0.04), rgba(0,0,0,0.12));
+    filter: blur(10px); opacity:.9; z-index:1; border-radius:50%;
+  }
+  .vignette{ position:absolute; inset:0; pointer-events:none; background: radial-gradient(60% 60% at 50% 40%, transparent, rgba(0,0,0,0.45)); z-index:10 }
+
+  @media (max-width:720px){
+    .nexus{ width:84vmin; height:84vmin }
+    .rings .ring{ display:none }
+  }
+</style>
+</head>
+<body>
+  <div class="stage" role="img" aria-label="Quantum Mesh - advanced CSS animation">
+    <div class="nebula" aria-hidden="true"></div>
+
+    <div class="camera" aria-hidden="false">
+      <div class="nexus">
+        <div class="rings" aria-hidden="true">
+          <div class="ring r3"></div>
+          <div class="ring r2"></div>
+          <div class="ring r1"></div>
+        </div>
+
+        <div class="links" aria-hidden="true">
+          <div class="link"><div class="bar"></div><div class="dot pulse"></div><div class="nodePanel">NODE • 01<br><span style="opacity:.7;font-weight:600;font-size:.68rem">τ 0.002s</span></div></div>
+          <div class="link"><div class="bar"></div><div class="dot"></div><div class="nodePanel">NODE • 02<br><span style="opacity:.7;font-weight:600;font-size:.68rem">τ 0.004s</span></div></div>
+          <div class="link"><div class="bar"></div><div class="dot"></div><div class="nodePanel">NODE • 03<br><span style="opacity:.7;font-weight:600;font-size:.68rem">τ 0.008s</span></div></div>
+          <div class="link"><div class="bar"></div><div class="dot pulse"></div><div class="nodePanel">NODE • 04<br><span style="opacity:.7;font-weight:600;font-size:.68rem">τ 0.003s</span></div></div>
+          <div class="link"><div class="bar"></div><div class="dot"></div><div class="nodePanel">NODE • 05<br><span style="opacity:.7;font-weight:600;font-size:.68rem">τ 0.006s</span></div></div>
+          <div class="link"><div class="bar"></div><div class="dot"></div><div class="nodePanel">NODE • 06<br><span style="opacity:.7;font-weight:600;font-size:.68rem">τ 0.009s</span></div></div>
+          <div class="link"><div class="bar"></div><div class="dot"></div><div class="nodePanel">NODE • 07<br><span style="opacity:.7;font-weight:600;font-size:.68rem">τ 0.005s</span></div></div>
+          <div class="link"><div class="bar"></div><div class="dot"></div><div class="nodePanel">NODE • 08<br><span style="opacity:.7;font-weight:600;font-size:.68rem">τ 0.007s</span></div></div>
+        </div>
+
+        <div class="core" aria-hidden="false">
+          <div class="vortex" aria-hidden="true"></div>
+          <div class="pulse" role="img" aria-label="core pulse"></div>
+        </div>
+
+        <div class="particles" aria-hidden="true">
+          <div class="particle p1" style="--tx:160px"></div>
+          <div class="particle p2" style="--tx:200px"></div>
+          <div class="particle p3" style="--tx:120px"></div>
+          <div class="particle p4" style="--tx:240px"></div>
+        </div>
+
+        <div class="reflection" aria-hidden="true"></div>
+      </div>
+
+      <div class="hud">NEXUS · QUANTUM MESH</div>
+      <div class="vignette" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const angles = [-8, 12, 46, 110, 180, 245, 300, 330];
+      const lens   = [220,200,170,210,240,190,205,175];
+      document.querySelectorAll('.links .link').forEach((el,i)=>{
+        el.style.setProperty('--angle', angles[i] + 'deg');
+        el.style.setProperty('--len', lens[i] + 'px');
+        el.querySelector('.bar').style.animationDelay = (0.18 + i*0.08) + 's';
+        el.style.animationDelay = (0.08 + i*0.06) + 's';
+        el.querySelector('.dot').style.animationDelay = (0.9 + i*0.06) + 's';
+        el.querySelector('.nodePanel').style.animationDelay = (1.05 + i*0.06) + 's';
+      });
+      document.querySelectorAll('.particle').forEach((p, i)=>{
+        p.style.animationDuration = (3.2 + i*0.9) + 's';
+      });
+    })();
+  </script>
+</body>
+</html>
